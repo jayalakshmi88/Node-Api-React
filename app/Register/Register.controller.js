@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
 Register.register = function (req, res) {
     // console.log("TEST:",req.body);
 
-   
+
 
     //User Register
 
@@ -23,77 +23,76 @@ Register.register = function (req, res) {
         }, {
             email: req.body.email
         }]
-    }, function (err, obj) 
-    {
+    }, function (err, obj) {
 
-        if (!err) {
-            if (obj == null) {
-                req.body.active = true;
-                req.body.removeAccount = true;
-                // req.body.city = "";
-                // req.body.address = "";
-                // req.body.phone = "";
-                let profile = new profileSchema(req.body);
-                profile.save()
-                    .then(function (response) {
-                        // console.log("save")
+            if (!err) {
+                if (obj == null) {
+                    req.body.active = true;
+                    req.body.removeAccount = true;
+                    // req.body.city = "";
+                    // req.body.address = "";
+                    // req.body.phone = "";
+                    let profile = new profileSchema(req.body);
+                    profile.save()
+                        .then(function (response) {
+                            // console.log("save")
 
+                            var out = {
+                                msg: "success",
+                                response: response
+
+                            }
+                            res.json(out);
+                        })
+                        .catch(function (err) {
+
+                            var out = {
+                                msg: "Error in save",
+                                response: err
+
+                            }
+                            res.json(out);
+
+                        })
+
+                } else {
+                    if (obj.email == req.body.email && obj.username == req.body.username) {
                         var out = {
-                            msg: "success",
-                            response: response
+                            msg: 'username and email already existed',
+                            // response:obj
 
                         }
                         res.json(out);
-                    })
-                    .catch(function (err) {
 
+                    } else if (obj.email == req.body.email) {
                         var out = {
-                            msg: "Error in save",
-                            response: err
+                            msg: 'email already existed',
+                            // response:obj
 
                         }
                         res.json(out);
 
-                    })
 
-            } else {
-                if (obj.email == req.body.email && obj.username == req.body.username) {
-                    var out = {
-                        msg: 'username and email already existed',
-                        // response:obj
+                    } else if (obj.username == req.body.username) {
+                        var out = {
+                            msg: 'username already existed',
+                            // response:obj
 
-                    }
-                    res.json(out);
-
-                } else if (obj.email == req.body.email) {
-                    var out = {
-                        msg: 'email already existed',
-                        // response:obj
+                        }
+                        res.json(out);
 
                     }
-                    res.json(out);
-
-
-                } else if (obj.username == req.body.username) {
-                    var out = {
-                        msg: 'username already existed',
-                        // response:obj
-
-                    }
-                    res.json(out);
 
                 }
+
+
+            } else {
+                // console.log("error" + err);
 
             }
 
 
-        } else {
-            // console.log("error" + err);
-
-        }
-
-
-    });
+        });
 
 
 }
@@ -102,7 +101,7 @@ Register.register = function (req, res) {
 
 Register.update = function (req, res) {
 
-   var updateData = {
+    var updateData = {
         email: req.body.email,
         username: req.body.username,
         firstName: req.body.firstName,
@@ -121,16 +120,15 @@ Register.update = function (req, res) {
             if (!err) {
 
                 // var msg="";
-                if(result.nModified == 0) {
-                    msg= 'Profile data not updated'
+                if (result.nModified == 0) {
+                    msg = 'Profile data not updated'
                 }
-                else 
-                {
-                    msg= 'Profile data updated successfully'
+                else {
+                    msg = 'Profile data updated successfully'
                 }
                 var out = {
                     msg: msg,
-                    response: result, 
+                    response: result,
                     // tokenStatus:a,
                     // token:token
 
@@ -155,9 +153,10 @@ Register.update = function (req, res) {
 
         });
 
-        }
+}
 
-Register.delete = function (req, res) {
+Register.delete1 = function (req, res) {
+    console.log(req.body)
 
     var RemoveAccount = {
         removeAccount: req.body.removeAccount,
@@ -198,13 +197,13 @@ Register.delete = function (req, res) {
 
         });
 
-        }
+}
 
 
 
 Register.ActiveAccount = function (req, res) {
 
-            profileSchema.update({
+    profileSchema.update({
         '_id': req.body.id
     }, {
             $set: {
@@ -242,163 +241,161 @@ Register.ActiveAccount = function (req, res) {
 
 }
 Register.UserLogin = function (req, res) {
-            
-        
-            //Admin login 
-            AdminSchema.findOne({
-                $or: [{
-                    "username": req.body.username
-                }, {
-                    "email": req.body.username
-                }]
-            }, function (err, result) {
-        
-                if (!err) {
-        
-        
-                    if (result != null) {
-        
-                        bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-                            if (err) return next(err);
-                            bcrypt.compare(req.body.password, result.password, function (err, isMatch) {
-                                if (err) {
-                                    // return console.error(err);
-                                }
-        
-                                if (isMatch) {
-    
-        
-                                var outPut = {
-                                        msg: "Admin login successfull",
-                                        result:result,
-                                        // token:token,
-                                        Match: isMatch
-        
-                                    }
-                                    res.json(outPut);
-        
-        
-                                } else {
-                                    var outPut = {
-                                        msg: "Password does not match",
-                                        Match: isMatch
-        
-                                    }
-                                    res.json(outPut);
-        
-                                }
-        
-                            });
-        
-        
-                        });
-        
-                    }
-        
-                    else {
-                        
 
-                        profileSchema.findOne({
-                            $or: [{
-                                "username": req.body.username
-                            }, {
-                                "email": req.body.username
-                            }]
-                        }, function (err, result) {
-                    
-                            if (!err) {
-            
-                                // console.log("Enter login page");
-                    
-                    
-                                if ((result != null)&&(result.removeAccount==true)) {
-                    
-                                    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-                                        if (err) return next(err);
-                                        bcrypt.compare(req.body.password, result.password, function (err, isMatch) {
-                                            if (err) {
-                                                // return console.error(err);
-                                            }
-                    
-                                            if (isMatch) {              
-                    
-                                            var outPut = {
-                                                    msg: "user Login successfull",
-                                                    id:result._id,
-                                                    //  token:token,
-                                                    Match: isMatch
-                    
-                                                }
-                                                //res.send(outPut);
-                                                res.json(outPut)
-                    
-                    
-                                            } else {
-                                                var outPut = {
-                                                    msg: "Password does not match",
-                                                    Match: isMatch
-                    
-                                                }
-                                                //res.send(outPut);
-                                                res.json(outPut)
-                                            }
-                    
-                                        });
-                    
-                    
-                                    });
-                    
-                                }
-                                else {
-                                    //res.send("No data pls register");
-                                    var outPut = {
-                                        msg: "Invalid User login details"
-                                    }
-                                   // res.send(outPut);
-                                   res.json(outPut)
-                                }
-                            } 
-                            
-                            else 
-                            
-                            {
-                                //res.send("err", err)
-                                res.json("err", err)
-                    
-                            }
-                    
-                        });
-                        
+
+    //Admin login 
+    AdminSchema.findOne({
+        $or: [{
+            "username": req.body.username
+        }, {
+            "email": req.body.username
+        }]
+    }, function (err, result) {
+
+        if (!err) {
+
+
+            if (result != null) {
+
+                bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+                    if (err) return next(err);
+                    bcrypt.compare(req.body.password, result.password, function (err, isMatch) {
+                        if (err) {
+                            // return console.error(err);
                         }
-            }
-                 else 
-        
-                    {
 
-                         //res.send("No data pls register");
-                         var outPut = {
-                            msg: "Invalid Admin login details"
+                        if (isMatch) {
+
+
+                            var outPut = {
+                                msg: "Admin login successfull",
+                                result: result,
+                                // token:token,
+                                Match: isMatch
+
                             }
-                        res.json(outPut);
-        
+                            res.json(outPut);
+
+
+                        } else {
+                            var outPut = {
+                                msg: "Password does not match",
+                                Match: isMatch
+
+                            }
+                            res.json(outPut);
+
+                        }
+
+                    });
+
+
+                });
+
+            }
+
+            else {
+
+
+                profileSchema.findOne({
+                    $or: [{
+                        "username": req.body.username
+                    }, {
+                        "email": req.body.username
+                    }]
+                }, function (err, result) {
+
+                    if (!err) {
+
+                        // console.log("Enter login page");
+
+
+                        if ((result != null) && (result.removeAccount == true) && (result.active == true)) {
+                            console.log("Results" + result)
+
+                            bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+                                if (err) return next(err);
+                                bcrypt.compare(req.body.password, result.password, function (err, isMatch) {
+                                    if (err) {
+                                        // return console.error(err);
+                                    }
+
+                                    if (isMatch) {
+
+                                        var outPut = {
+                                            msg: "user Login successfull",
+                                            id: result._id,
+                                            //  token:token,
+                                            Match: isMatch
+
+                                        }
+                                        //res.send(outPut);
+                                        res.json(outPut)
+
+
+                                    } else {
+                                        var outPut = {
+                                            msg: "Password does not match",
+                                            Match: isMatch
+
+                                        }
+                                        //res.send(outPut);
+                                        res.json(outPut)
+                                    }
+
+                                });
+
+
+                            });
+
+                        }
+                        else {
+                            //res.send("No data pls register");
+                            var outPut = {
+                                msg: "Invalid User login details"
+                            }
+                            // res.send(outPut);
+                            res.json(outPut)
+                        }
                     }
-        
-        
+
+                    else {
+                        //res.send("err", err)
+                        res.json("err", err)
+
                     }
-        
-)}
+
+                });
+
+            }
+        }
+        else {
+
+            //res.send("No data pls register");
+            var outPut = {
+                msg: "Invalid Admin login details"
+            }
+            res.json(outPut);
+
+        }
 
 
-Register.findUsers = function(req, res){
+    }
 
-    profileSchema.find({}, function(err, obj){
+    )
+}
 
-        if(!err){
+
+Register.findUsers = function (req, res) {
+
+    profileSchema.find({}, function (err, obj) {
+
+        if (!err) {
 
             var output = {
 
                 msg: "Users found successfully",
-                Data: obj
+                App: obj
             }
 
             res.json(output)

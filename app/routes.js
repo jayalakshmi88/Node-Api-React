@@ -6,7 +6,7 @@ module.exports=function(app)
         //user routing
      app.post('/userRegister',Register.register)
      app.post('/userUpdate',Register.update)
-     app.post('/userDelete',Register.delete)
+     app.post('/userDelete',Register.delete1)
      app.post('/userActiveAccount',Register.ActiveAccount)
      app.post('/userLogin',Register.UserLogin)
       app.get('/findUsers',Register.findUsers)
