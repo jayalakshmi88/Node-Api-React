@@ -18,7 +18,7 @@ var mongoose = require('mongoose'),
 Admin.register = function (req, res) {
 
     
-    console.log("TEST:",req.body);
+    // console.log("TEST:",req.body);
 
         AdminSchema.findOne({
             $or: [{
@@ -38,7 +38,7 @@ Admin.register = function (req, res) {
         
                         profile.save()
                             .then(function (response) {
-                            console.log("save")
+                            // console.log("save")
 
                         var out = {
                             msg: "success",
@@ -49,7 +49,7 @@ Admin.register = function (req, res) {
                     })
                     .catch(function (err) {
 
-                        console.log(err);
+                        // console.log(err);
                         var out = {
                             msg: "Error in save",
                             response: err
@@ -86,7 +86,7 @@ Admin.register = function (req, res) {
         else 
             {
                 res.json(err);
-                console.log('err' +err);
+                // console.log('err' +err);
             }
     })
  }
@@ -111,7 +111,7 @@ Admin.update = function (req, res)
     //          a={err:err, success: false, message: 'Failed to authenticate token.',status:false }
     //     }
     //   });
-    console.log(req.body)
+    // console.log(req.body)
 
     let updateData = {
         email: req.body.email,
@@ -133,16 +133,25 @@ Admin.update = function (req, res)
         }, function (err, result) {
     
             if (!err) {
-                
-                {
+
+                var msg="";
+                if (result.nModified == 0) {
+                    msg='Admin data not modified';
+
+                }
+                else {
+                    msg='Admin data updated successfully';
+
+                }
+                               
                       var out = {
-                            msg: 'Admin data updated successfully',
+                            msg: msg,
                             response: result, 
                             // tokenStatus:a,
                             // token:token
                         }
                        res.json(out);
-                }
+                
                 
             } else {
             
@@ -171,13 +180,13 @@ Admin.medianIncome = function(req, res){
         
                 if(err) {
         
-                    console.log(err);
+                    // console.log(err);
                     res.json(err)
         
                 }
                 else {
         
-                    console.log(result);
+                    // console.log(result);
                     var output = {
                         msg: "Found data successfully",
                         App: result
@@ -246,8 +255,17 @@ Admin.updateMedianIncome = function(req, res)
         
                  if (!err) {
                     
+                    var msg="";
+                    if (result.nModified == 0) {
+                        msg='Median Income data not modified';
+    
+                    }
+                    else {
+                        msg='"Median Income data updated successfully"';
+    
+                    }
                           var output = {
-                              msg: "Median Income data updated successfully",
+                              msg: msg,
                               response: result, 
                                 // token:token
                             }
@@ -305,7 +323,7 @@ Admin.addMedianIncomeData = function(req, res) {
             let data = new medianIncomeSchema(req.body);
                 data.save()
                     .then(function(response) {
-                        console.log("save")
+                        // console.log("save")
                             var out={
                              msg:"Success",
                                 response: response
@@ -313,7 +331,7 @@ Admin.addMedianIncomeData = function(req, res) {
                             res.json(out);
                     })
                     .catch(function(err) {
-                        console.log(err);
+                        // console.log(err);
                             var out={
                             msg:"Error",
                             response: err
@@ -360,13 +378,13 @@ Admin.fmrRents = function(req, res){
             
                     if(err) {
             
-                        console.log(err);
+                        // console.log(err);
                         res.json(err)
             
                     }
                     else {
             
-                        console.log(result);
+                        // console.log(result);
                         res.json(result)
                     }
             
@@ -378,7 +396,7 @@ Admin.addfmrRents = function(req, res) {
     let data = new fmrRentsSchema(req.body);
     data.save()
         .then(function(response) {
-            console.log("save")
+            // console.log("save")
                 var out={
                  msg:"Success",
                     response: response
@@ -386,7 +404,7 @@ Admin.addfmrRents = function(req, res) {
                 res.json(out);
         })
         .catch(function(err) {
-            console.log(err);
+            // console.log(err);
                 var out={
                 msg:"Error",
                 response: err
@@ -421,9 +439,19 @@ Admin.updatefmrRents = function(req, res) {
     }, function (err, result) {
         
                  if (!err) {
+
+                    var msg="";
+                    if (result.nModified == 0) {
+                        msg='FMR Rents data not modified';
+    
+                    }
+                    else {
+                        msg='FMR Rents data updated successfully';
+    
+                    }
                     
                           var output = {
-                              msg: "FMR Rents data updated successfully",
+                              msg: msg,
                               response: result, 
                                 // token:token
                             }
@@ -516,13 +544,13 @@ Admin.rcAssumption = function(req, res){
  
          if(err) {
  
-             console.log(err);
+            //  console.log(err);
              res.json(err)
  
          } 
          else{
  
-             console.log(obj)
+            //  console.log(obj)
              res.json(obj)
          }
  
@@ -534,7 +562,7 @@ Admin.rcAssumption = function(req, res){
     let data = new rcAssumptionSchema(req.body);
     data.save()
         .then(function(response) {
-            console.log("save")
+            // console.log("save")
                 var out={
                  msg:"Success",
                     response: response
@@ -542,7 +570,7 @@ Admin.rcAssumption = function(req, res){
                 res.json(out);
         })
         .catch(function(err) {
-            console.log(err);
+            // console.log(err);
                 var out={
                 msg:"Error",
                 response: err
@@ -569,9 +597,18 @@ Admin.rcAssumption = function(req, res){
     }, function (err, result) {
         
                  if (!err) {
-                    
-                          var output = {
-                              msg: "RC Assumptions data updated successfully",
+
+                    var msg="";
+                    if (result.nModified == 0) {
+                        msg='RC Assumptions data not modified';
+    
+                    }
+                    else {
+                        msg='RC Assumptions updated successfully';
+    
+                    }
+                        var output = {
+                              msg: msg,
                               response: result, 
                                 // token:token
                             }

@@ -11,7 +11,7 @@ var mongoose = require('mongoose'),
 
 
 Register.register = function (req, res) {
-    console.log("TEST:",req.body);
+    // console.log("TEST:",req.body);
 
    
 
@@ -36,7 +36,7 @@ Register.register = function (req, res) {
                 let profile = new profileSchema(req.body);
                 profile.save()
                     .then(function (response) {
-                        console.log("save")
+                        // console.log("save")
 
                         var out = {
                             msg: "success",
@@ -88,7 +88,7 @@ Register.register = function (req, res) {
 
 
         } else {
-            console.log("error" + err);
+            // console.log("error" + err);
 
         }
 
@@ -119,8 +119,17 @@ Register.update = function (req, res) {
         }, function (err, result) {
 
             if (!err) {
+
+                // var msg="";
+                if(result.nModified == 0) {
+                    msg= 'Profile data not updated'
+                }
+                else 
+                {
+                    msg= 'Profile data updated successfully'
+                }
                 var out = {
-                    msg: 'your profile has been successfully updated',
+                    msg: msg,
                     response: result, 
                     // tokenStatus:a,
                     // token:token
@@ -253,7 +262,7 @@ Register.UserLogin = function (req, res) {
                             if (err) return next(err);
                             bcrypt.compare(req.body.password, result.password, function (err, isMatch) {
                                 if (err) {
-                                    return console.error(err);
+                                    // return console.error(err);
                                 }
         
                                 if (isMatch) {
@@ -299,7 +308,7 @@ Register.UserLogin = function (req, res) {
                     
                             if (!err) {
             
-                                console.log("Enter login page");
+                                // console.log("Enter login page");
                     
                     
                                 if ((result != null)&&(result.removeAccount==true)) {
@@ -308,7 +317,7 @@ Register.UserLogin = function (req, res) {
                                         if (err) return next(err);
                                         bcrypt.compare(req.body.password, result.password, function (err, isMatch) {
                                             if (err) {
-                                                return console.error(err);
+                                                // return console.error(err);
                                             }
                     
                                             if (isMatch) {              
